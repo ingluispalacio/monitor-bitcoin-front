@@ -1,0 +1,102 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <div class="lg:col-span-2 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-black text-gray-800 tracking-tight italic">PENDING_ORDERS</h2>
+        <span class="px-3 py-1 bg-yellow-400 text-yellow-900 text-xs font-bold rounded-full animate-bounce">
+          {{ pendingOrders.length }} POR REVISAR
+        </span>
+      </div>
+
+      <div *ngIf="loading" class="flex justify-center py-20">
+        <div class="w-10 h-10 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+
+      <div *ngIf="!loading && pendingOrders.length === 0" class="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-12 text-center">
+        <p class="text-gray-400 font-medium">Bandeja de entrada limpia. No hay órdenes pendientes.</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4" *ngIf="!loading">
+        <div *ngFor="let order of pendingOrders" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <p class="text-xs text-gray-400 font-mono">ID: {{ order.id.toString() | slice:0:8 }}</p>
+              <h3 class="text-lg font-bold text-gray-900">{{ order.clientName }}</h3>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-black text-yellow-600">PENDIENTE</p>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-4 flex justify-between items-center mb-4">
+            <div>
+              <span class="text-[10px] text-gray-400 uppercase block">Cantidad</span>
+              <span class="font-bold text-gray-800">{{ order.amount }} BTC</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-gray-400 uppercase block">Total a pagar</span>
+              <span class="font-bold text-green-600">${{ order.total | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <button (click)="approveOrder(order.id.toString())" 
+                    class="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold text-xs hover:bg-black transition-colors">
+              APROBAR ORDEN
+            </button>
+            <button (click)="rejectOrder(order.id.toString())" 
+                    class="flex-1 bg-white border border-red-200 text-red-600 py-3 rounded-xl font-bold text-xs hover:bg-red-50 transition-colors">
+              RECHAZAR
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <h2 class="text-2xl font-black text-gray-800 tracking-tight italic">LIVE_FEED</h2>
+      
+      <div class="bg-gray-900 rounded-3xl shadow-2xl border border-gray-800 overflow-hidden">
+        <div class="p-5 border-b border-gray-800 bg-gray-800/50 flex items-center justify-between">
+          <span class="text-[10px] font-mono text-gray-400 uppercase tracking-widest">System Monitor v1.0</span>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+          </div>
+        </div>
+
+        <div class="p-6 h-[500px] overflow-y-auto space-y-6 scrollbar-hide font-mono">
+          <div *ngIf="liveEvents.length === 0" class="text-gray-600 text-center py-20 text-xs italic">
+            Esperando actividad del servidor...
+          </div>
+
+          <div *ngFor="let event of liveEvents" class="border-l-2 pl-4 pb-1"
+               [ngClass]="{
+                 'border-blue-500': event.status === 'PENDING',
+                 'border-green-500': event.status === 'APPROVED',
+                 'border-red-500': event.status === 'REJECTED'
+               }">
+            <p class="text-[9px] text-gray-500 mb-1">{{ event.timestamp | date:'HH:mm:ss' }}</p>
+            
+            <p class="text-xs leading-relaxed">
+              <span class="text-white font-bold">{{ event.clientName }}</span>: 
+              
+              <span *ngIf="event.status === 'PENDING'" class="text-blue-400 font-bold">
+                HA CREADO UNA NUEVA ORDEN POR {{ event.amount }} BTC. REVISIÓN REQUERIDA.
+              </span>
+
+              <span *ngIf="event.status === 'APPROVED'" class="text-green-400 font-bold">
+                ORDEN APROBADA. FONDOS LIBERADOS AL CLIENTE.
+              </span>
+
+              <span *ngIf="event.status === 'REJECTED'" class="text-red-400 font-bold">
+                ORDEN RECHAZADA POR EL ADMINISTRADOR.
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

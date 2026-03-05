@@ -1,0 +1,44 @@
+<div class="users-container">
+  <!-- Botón para agregar nuevo usuario -->
+  <div class="header-actions mb-6">
+    <button (click)="openCreateModal()" class="btn-primary flex items-center gap-2">
+      <i class="bi bi-plus-circle"></i>
+      Agregar Usuario
+    </button>
+  </div>
+
+  <!-- Datatable -->
+  <app-datatable
+    [data]="users"
+    [columns]="columns"
+    [actions]="actions"
+    [loading]="loading"
+    [currentPage]="currentPage"
+    [pageSize]="pageSize"
+    [totalItems]="totalItems"
+    title="Gestión de Usuarios"
+    [searchEnabled]="true"
+    [showPagination]="true"
+    (actionClicked)="onActionClicked($event)"
+    (pageChanged)="onPageChanged($event)"
+    (searchChanged)="onSearchChanged($event)"
+    (sortChanged)="onSortChanged($event)">
+  </app-datatable>
+  <!-- Modal de Usuario -->
+<app-user-form-modal 
+  *ngIf="showUserModal"
+  [data]="modalData"
+  (closed)="onUserModalClosed()"
+  (submitted)="onUserModalSubmitted($event)">
+</app-user-form-modal>
+
+<!-- Modal de Confirmación -->
+<app-confirmation-dialog 
+  *ngIf="showConfirmation"
+  [data]="confirmationData"
+  (closed)="onConfirmationResult($event)">
+</app-confirmation-dialog>
+</div>
+
+
+

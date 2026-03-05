@@ -1,0 +1,62 @@
+<div *ngIf="isOpen" class="fixed inset-0 z-50 overflow-y-auto" (keydown.escape)="onCancel()">
+  <!-- Backdrop -->
+  <div 
+    class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" 
+    (click)="onCancel()">
+  </div>
+  
+  <!-- Modal -->
+  <div class="flex min-h-full items-center justify-center p-4">
+    <div class="relative bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all animate-fade-in">
+      
+      <!-- Header con ícono -->
+      <div class="absolute -top-12 left-1/2 transform -translate-x-1/2">
+        <div class="w-20 h-20 rounded-full bg-white shadow-lg flex items-center justify-center">
+          <i [class]="'bi ' + getIcon() + ' text-4xl ' + getIconColor()"></i>
+        </div>
+      </div>
+
+      <!-- Contenido -->
+      <div class="pt-12 p-6">
+        
+        <!-- Título -->
+        <h3 class="text-xl font-bold text-center mb-2" [class]="getTitleClass()">
+          {{ data.title }}
+        </h3>
+        
+        <!-- Mensaje -->
+        <p class="text-gray-600 text-center mb-6">{{ data.message }}</p>
+        
+        <!-- Botones -->
+        <div class="flex justify-center gap-3">
+          
+          <!-- Botón Cancelar -->
+          <button 
+            type="button"
+            (click)="onCancel()"
+            class="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2">
+            <i class="bi bi-x-lg"></i>
+            {{ data.cancelText || 'Cancelar' }}
+          </button>
+          
+          <!-- Botón Confirmar -->
+          <button 
+            type="button"
+            (click)="onConfirm()"
+            [class]="'px-6 py-2 rounded-lg transition-colors flex items-center gap-2 ' + getConfirmButtonClass()">
+            <i class="bi bi-check-lg"></i>
+            {{ data.confirmText || 'Confirmar' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón cerrar (X) -->
+      <button 
+        type="button"
+        (click)="onCancel()"
+        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+        <i class="bi bi-x-lg text-xl"></i>
+      </button>
+    </div>
+  </div>
+</div>

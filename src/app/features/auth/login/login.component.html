@@ -1,0 +1,62 @@
+<div class="text-center mb-6">
+  <h2 class="text-2xl font-bold text-gray-900">Iniciar Sesión</h2>
+  <p class="text-gray-600 mt-2">Ingresa tus credenciales para acceder</p>
+</div>
+
+<form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+      Usuario
+    </label>
+    <input 
+      type="text" 
+      name="username"
+      [(ngModel)]="credentials.username"
+      required
+      minlength="3"
+      #usernameInput="ngModel"
+      class="input"
+      [class.border-red-500]="usernameInput.invalid && usernameInput.touched"
+      placeholder="Ingresa tu usuario">
+    
+    <div *ngIf="usernameInput.invalid && usernameInput.touched" class="mt-1 text-sm text-red-600">
+      <span *ngIf="usernameInput.errors?.['required']">El usuario es requerido</span>
+      <span *ngIf="usernameInput.errors?.['minlength']">Mínimo 3 caracteres</span>
+    </div>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+      Contraseña
+    </label>
+    <input 
+      type="password"
+      name="password" 
+      [(ngModel)]="credentials.password"
+      required
+      minlength="6"
+      #passwordInput="ngModel"
+      class="input"
+      [class.border-red-500]="passwordInput.invalid && passwordInput.touched"
+      placeholder="Ingresa tu contraseña">
+    
+    <div *ngIf="passwordInput.invalid && passwordInput.touched" class="mt-1 text-sm text-red-600">
+      <span *ngIf="passwordInput.errors?.['required']">La contraseña es requerida</span>
+      <span *ngIf="passwordInput.errors?.['minlength']">Mínimo 6 caracteres</span>
+    </div>
+  </div>
+
+  <button 
+    type="submit"
+    [disabled]="loginForm.invalid || loading"
+    class="btn-primary w-full">
+    <span *ngIf="!loading">Iniciar Sesión</span>
+    <span *ngIf="loading" class="flex items-center justify-center">
+      <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+      </svg>
+      Procesando...
+    </span>
+  </button>
+</form>

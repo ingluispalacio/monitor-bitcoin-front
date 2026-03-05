@@ -1,0 +1,52 @@
+<div class="space-y-6">
+  <div class="flex justify-between items-center">
+    <h2 class="text-2xl font-bold text-gray-800">Gestión de Órdenes</h2>
+    
+    <!-- Filtros -->
+    <div class="flex space-x-2">
+      <select 
+        [(ngModel)]="statusFilter" 
+        (change)="applyFilter()"
+        class="input w-48">
+        <option value="">Todos los estados</option>
+        <option value="PENDING">Pendientes</option>
+        <option value="APPROVED">Aprobadas</option>
+        <option value="REJECTED">Rechazadas</option>
+      </select>
+      
+      <button 
+        (click)="refreshOrders()"
+        class="btn-primary">
+        🔄 Actualizar
+      </button>
+    </div>
+  </div>
+
+  <!-- Estadísticas rápidas -->
+  <div class="grid grid-cols-4 gap-4">
+    <div class="bg-white rounded-lg shadow p-4">
+      <p class="text-sm text-gray-500">Total</p>
+      <p class="text-2xl font-bold">{{ stats.total || 0 }}</p>
+    </div>
+    <div class="bg-yellow-50 rounded-lg shadow p-4">
+      <p class="text-sm text-yellow-600">Pendientes</p>
+      <p class="text-2xl font-bold text-yellow-700">{{ stats.pending || 0 }}</p>
+    </div>
+    <div class="bg-green-50 rounded-lg shadow p-4">
+      <p class="text-sm text-green-600">Aprobadas</p>
+      <p class="text-2xl font-bold text-green-700">{{ stats.approved || 0 }}</p>
+    </div>
+    <div class="bg-red-50 rounded-lg shadow p-4">
+      <p class="text-sm text-red-600">Rechazadas</p>
+      <p class="text-2xl font-bold text-red-700">{{ stats.rejected || 0 }}</p>
+    </div>
+  </div>
+
+  <!-- Tabla de órdenes -->
+  <app-order-table 
+    [orders]="orders" 
+    [loading]="loading"
+    (onApprove)="approveOrder($event)"
+    (onReject)="rejectOrder($event)">
+  </app-order-table>
+</div>

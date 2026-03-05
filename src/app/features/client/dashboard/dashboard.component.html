@@ -1,0 +1,185 @@
+<div class="space-y-6 animate-fade-in">
+  <div class="bg-gradient-to-r from-blue-700 to-indigo-900 text-white p-8 rounded-xl shadow-xl border-b-4 border-blue-500">
+    <div class="flex items-center gap-4">
+      <i class="bi bi-speedometer2 text-5xl text-blue-300"></i>
+      <div>
+        <h1 class="text-4xl font-black mb-1">Dashboard de Compra</h1>
+        <p class="text-blue-100 opacity-80 font-medium">Monitorea precios y gestiona tus activos en tiempo real</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-8 border-t-4 border-blue-600">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-black text-gray-800 uppercase tracking-tight">
+          <i class="bi bi-graph-up-arrow text-blue-600 mr-2"></i>Bitcoin / USD
+        </h2>
+        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold animate-pulse">
+          <i class="bi bi-broadcast mr-1"></i> EN VIVO
+        </span>
+      </div>
+      
+      <div *ngIf="bitcoinPrice; else noPriceLoading" class="space-y-8">
+        <div class="flex flex-wrap justify-between items-end gap-4">
+          <div>
+            <p class="text-gray-400 text-xs font-black uppercase tracking-widest mb-1">Precio Actual</p>
+            <p class="text-6xl font-black text-slate-900 tracking-tighter">
+              ${{ (bitcoinPrice.priceUsd || 0) | number:'1.2-2' }}
+            </p>
+            <p class="text-gray-400 text-sm mt-2 italic">
+              <i class="bi bi-clock mr-1"></i>{{ (bitcoinPrice.timestamp || bitcoinPrice.lastUpdated) | date:'medium' }}
+            </p>
+          </div>
+          <div [class]="(bitcoinPrice.change24h || 0) >= 0 ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50'" 
+               class="p-4 rounded-2xl border transition-colors">
+            <p class="text-[10px] font-black uppercase tracking-widest mb-1 opacity-70 text-center">Cambio 24H</p>
+            <p class="text-3xl font-black flex items-center justify-center">
+              <i [class]="(bitcoinPrice.change24h || 0) >= 0 ? 'bi-caret-up-fill' : 'bi-caret-down-fill'" class="mr-2"></i>
+              {{ (bitcoinPrice.change24h || 0) >= 0 ? '+' : '' }}{{ (bitcoinPrice.change24h || 0) | number:'1.2-2' }}%
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Volumen 24H</p>
+              <p class="text-xl font-black text-slate-800">${{ (bitcoinPrice.volume24h || 0) | number:'1.0-0' }}</p>
+            </div>
+            <i class="bi bi-bar-chart text-slate-300 text-2xl"></i>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Market Cap</p>
+              <p class="text-xl font-black text-slate-800">${{ (bitcoinPrice.marketCap || 0) | number:'1.0-0' }}</p>
+            </div>
+            <i class="bi bi-globe text-slate-300 text-2xl"></i>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-slate-100">
+          <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1 flex items-center justify-between p-4 rounded-xl transition-all" 
+                 [class]="purchasesEnabled ? 'bg-emerald-50 border border-emerald-100' : 'bg-rose-50 border border-rose-100'">
+              <div class="flex items-center gap-3">
+                <i [class]="purchasesEnabled ? 'bi-check-circle-fill text-emerald-500' : 'bi-slash-circle-fill text-rose-500'" class="text-2xl"></i>
+                <div>
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Módulo: CRYPTO_MONITOR</p>
+                  <p class="font-black text-sm" [class]="purchasesEnabled ? 'text-emerald-700' : 'text-rose-700'">
+                    {{ purchasesEnabled ? 'OPERACIONES HABILITADAS' : 'OPERACIONES SUSPENDIDAS' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              [disabled]="!purchasesEnabled"
+              (click)="isModalOpen = true" 
+              class="md:w-1/3 flex items-center justify-center gap-2 font-black py-4 px-6 rounded-xl transition-all shadow-lg active:scale-95"
+              [class]="purchasesEnabled ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200' : 'bg-slate-200 text-slate-400 cursor-not-allowed'"
+            >
+              <i [class]="purchasesEnabled ? 'bi-plus-square-fill' : 'bi-lock-fill'"></i>
+              {{ purchasesEnabled ? 'NUEVA COMPRA' : 'BLOQUEADO' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noPriceLoading>
+        <div class="text-center py-20">
+          <div class="bi bi-arrow-repeat text-5xl animate-spin text-blue-200 mb-4 inline-block"></div>
+          <p class="text-slate-400 font-bold uppercase tracking-tighter">Sincronizando cotizaciones...</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="space-y-6">
+      <div class="bg-white rounded-xl shadow-md p-6 border border-slate-100">
+        <h3 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">
+          <i class="bi bi-pie-chart-fill mr-2"></i>Mi Actividad
+        </h3>
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500 font-medium">Total Órdenes</span>
+            <span class="px-2 py-1 bg-slate-100 rounded text-slate-800 font-black text-sm">{{ orderStats.total }}</span>
+          </div>
+          <div class="flex justify-between items-center text-yellow-600">
+            <span class="font-medium">Pendientes</span>
+            <span class="px-2 py-1 bg-yellow-50 rounded font-black text-sm">{{ orderStats.pending }}</span>
+          </div>
+          <div class="flex justify-between items-center text-green-600">
+            <span class="font-medium">Aprobadas</span>
+            <span class="px-2 py-1 bg-green-50 rounded font-black text-sm">{{ orderStats.approved }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-800 rounded-xl shadow-lg p-6 text-white">
+        <h3 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Acciones Rápidas</h3>
+        <div class="grid grid-cols-1 gap-3">
+          <button routerLink="/client/my-orders" class="flex items-center justify-between w-full bg-white/5 hover:bg-white/10 p-3 rounded-lg transition-all group">
+            <span class="font-bold text-sm"><i class="bi bi-list-ul mr-2 text-blue-400"></i>Historial Completo</span>
+            <i class="bi bi-chevron-right text-slate-500 group-hover:text-white transition-colors"></i>
+          </button>
+          <button (click)="refreshData()" class="flex items-center justify-center w-full border border-white/10 hover:bg-white/5 p-3 rounded-lg transition-all font-bold text-xs uppercase">
+            <i class="bi bi-arrow-clockwise mr-2"></i>Actualizar Vista
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden">
+    <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+      <h3 class="text-lg font-black text-slate-800 italic uppercase tracking-tighter">
+        <i class="bi bi-clock-history text-blue-600 mr-2"></i>Últimas Operaciones
+      </h3>
+      <button routerLink="/client/my-orders" class="text-blue-600 text-xs font-bold hover:underline uppercase tracking-widest">Ver Todo</button>
+    </div>
+    
+    <div *ngIf="recentOrders.length > 0; else noOrders" class="overflow-x-auto">
+      <table class="min-w-full">
+        <thead class="bg-slate-50/50">
+          <tr>
+            <th class="px-6 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha</th>
+            <th class="px-6 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Cantidad</th>
+            <th class="px-6 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Inversión</th>
+            <th class="px-6 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr *ngFor="let order of recentOrders" class="hover:bg-blue-50/20 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-500">
+              {{ order.createdAt | date:'dd MMM, HH:mm' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-black text-slate-700">
+              <i class="bi bi-currency-bitcoin text-orange-400"></i> {{ order.amount | number:'1.4-4' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="text-sm font-black text-blue-700">${{ (order.total || 0) | number:'1.2-2' }}</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span [ngClass]="getStatusClass(order.status)" class="px-3 py-1 rounded-full text-[10px] font-black border uppercase">
+                {{ order.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <ng-template #noOrders>
+      <div class="p-12 text-center">
+        <i class="bi bi-clipboard-x text-4xl text-slate-200 mb-2 block"></i>
+        <p class="text-slate-400 font-medium italic text-sm">No has realizado operaciones recientemente.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<app-create-order-modal 
+  [isOpen]="isModalOpen" 
+  (close)="isModalOpen = false"
+  (orderCreated)="refreshData()">
+</app-create-order-modal>

@@ -1,0 +1,160 @@
+<!-- Ejemplo de uso del datatable en el componente de órdenes -->
+
+<div class="orders-container">
+  <!-- Header con opciones -->
+  <div class="header-section mb-6 flex items-center justify-between">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-800">Historial de Órdenes</h2>
+      <p class="text-gray-500 mt-1">Gestiona todas las órdenes de criptomonedas</p>
+    </div>
+
+    <div class="header-actions flex gap-3">
+      <button class="btn-secondary flex items-center gap-2">
+        <i class="bi bi-download"></i>
+        Descargar
+      </button>
+      <button class="btn-primary flex items-center gap-2">
+        <i class="bi bi-plus-circle"></i>
+        Nueva Orden
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros opcionales -->
+  <div class="filters-section mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+      <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+        <option value="">Todos los estados</option>
+        <option value="PENDING">Pendiente</option>
+        <option value="COMPLETED">Completada</option>
+        <option value="CANCELLED">Cancelada</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Criptomoneda</label>
+      <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+        <option value="">Todas</option>
+        <option value="BTC">Bitcoin</option>
+        <option value="ETH">Ethereum</option>
+        <option value="LTC">Litecoin</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Desde</label>
+      <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Hasta</label>
+      <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+    </div>
+  </div>
+
+  <!-- Tabla de datos -->
+  <app-datatable
+    [data]="orders"
+    [columns]="columns"
+    [actions]="actions"
+    [loading]="loading"
+    [currentPage]="currentPage"
+    [pageSize]="pageSize"
+    [totalItems]="totalItems"
+    title="Órdenes"
+    [searchEnabled]="true"
+    [showPagination]="true"
+    (actionClicked)="onActionClicked($event)"
+    (pageChanged)="onPageChanged($event)"
+    (searchChanged)="onSearchChanged($event)"
+    (sortChanged)="onSortChanged($event)">
+  </app-datatable>
+</div>
+
+<style scoped>
+.orders-container {
+  width: 100%;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.filters-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filters-section {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

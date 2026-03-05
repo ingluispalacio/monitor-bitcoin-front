@@ -1,0 +1,243 @@
+<div class="space-y-6 animate-fade-in">
+  <div class="bg-gradient-to-r from-purple-700 to-purple-900 text-white p-8 rounded-xl shadow-xl border-b-4 border-purple-500">
+    <div class="flex items-center gap-4">
+      <i class="bi bi-journal-text text-5xl opacity-80"></i>
+      <div>
+        <h1 class="text-4xl font-black mb-1 tracking-tight">Mis Órdenes</h1>
+        <p class="text-purple-100 opacity-90 font-medium">Historial completo y gestión de solicitudes de compra</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+    <div class="flex flex-wrap gap-6 items-end">
+      <div class="w-full md:w-64">
+        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">
+          <i class="bi bi-filter-left mr-1"></i> Filtrar por estado
+        </label>
+        <select 
+          [(ngModel)]="statusFilter"
+          (ngModelChange)="applyFilters()"
+          class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none font-medium transition-all"
+        >
+          <option value="">Todos los registros</option>
+          <option [value]="OrderStatus.PENDING">Pendientes</option>
+          <option [value]="OrderStatus.APPROVED">Aprobadas</option>
+          <option [value]="OrderStatus.REJECTED">Rechazadas</option>
+          <option [value]="OrderStatus.CANCELLED">Canceladas</option>
+          <option [value]="OrderStatus.COMPLETED">Completadas</option>
+        </select>
+      </div>
+
+      <div class="flex-1 min-w-[280px]">
+        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">
+          <i class="bi bi-search mr-1"></i> Localizar orden
+        </label>
+        <div class="relative">
+          <i class="bi bi-hash absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+          <input
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="applyFilters()"
+            type="text"
+            placeholder="Buscar por ID o cantidad exacta..."
+            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none font-medium"
+          />
+        </div>
+      </div>
+
+      <div class="flex gap-2 w-full md:w-auto">
+        <button
+          (click)="resetFilters()"
+          class="flex-1 md:flex-none px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-lg transition-all"
+        >
+          <i class="bi bi-eraser mr-2"></i>Limpiar
+        </button>
+        <button
+          (click)="refreshOrders()"
+          class="flex-1 md:flex-none px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-lg shadow-purple-200 transition-all"
+        >
+          <i class="bi bi-arrow-clockwise mr-2"></i>Actualizar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div class="bg-white border-b-4 border-blue-500 rounded-xl shadow-sm p-4">
+      <p class="text-blue-600 text-[10px] font-black uppercase tracking-widest mb-1">Total</p>
+      <div class="flex items-end justify-between">
+        <p class="text-3xl font-black text-gray-800">{{ orderStats.total }}</p>
+        <i class="bi bi-collection text-blue-100 text-2xl"></i>
+      </div>
+    </div>
+    <div class="bg-white border-b-4 border-yellow-500 rounded-xl shadow-sm p-4">
+      <p class="text-yellow-600 text-[10px] font-black uppercase tracking-widest mb-1">Pendientes</p>
+      <div class="flex items-end justify-between">
+        <p class="text-3xl font-black text-gray-800">{{ orderStats.pending }}</p>
+        <i class="bi bi-hourglass-split text-yellow-100 text-2xl"></i>
+      </div>
+    </div>
+    <div class="bg-white border-b-4 border-green-500 rounded-xl shadow-sm p-4">
+      <p class="text-green-600 text-[10px] font-black uppercase tracking-widest mb-1">Aprobadas</p>
+      <div class="flex items-end justify-between">
+        <p class="text-3xl font-black text-gray-800">{{ orderStats.approved }}</p>
+        <i class="bi bi-check2-all text-green-100 text-2xl"></i>
+      </div>
+    </div>
+    <div class="bg-white border-b-4 border-red-500 rounded-xl shadow-sm p-4">
+      <p class="text-red-600 text-[10px] font-black uppercase tracking-widest mb-1">Rechazadas</p>
+      <div class="flex items-end justify-between">
+        <p class="text-3xl font-black text-gray-800">{{ orderStats.rejected }}</p>
+        <i class="bi bi-x-circle text-red-100 text-2xl"></i>
+      </div>
+    </div>
+    <div class="bg-white border-b-4 border-gray-400 rounded-xl shadow-sm p-4">
+      <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">Canceladas</p>
+      <div class="flex items-end justify-between">
+        <p class="text-3xl font-black text-gray-800">{{ orderStats.cancelled }}</p>
+        <i class="bi bi-slash-circle text-gray-100 text-2xl"></i>
+      </div>
+    </div>
+    <div class="bg-white border-b-4 border-indigo-500 rounded-xl shadow-sm p-4">
+      <p class="text-indigo-600 text-[10px] font-black uppercase tracking-widest mb-1">Completadas</p>
+      <div class="flex items-end justify-between">
+        <p class="text-3xl font-black text-gray-800">{{ orderStats.completed }}</p>
+        <i class="bi bi-flag-fill text-indigo-100 text-2xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
+    <div *ngIf="loading" class="p-20 text-center">
+      <i class="bi bi-arrow-repeat text-5xl animate-spin text-purple-200 inline-block mb-4"></i>
+      <p class="text-gray-400 font-bold uppercase tracking-tighter">Obteniendo historial...</p>
+    </div>
+
+    <div *ngIf="!loading && filteredOrders.length === 0" class="p-20 text-center">
+      <i class="bi bi-search-heart text-6xl text-gray-100 mb-4 block"></i>
+      <p class="text-gray-500 text-xl font-medium mb-6">No hay registros que coincidan con los filtros</p>
+      <button
+        routerLink="/client/create-order"
+        class="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-black rounded-xl transition-all shadow-lg shadow-purple-100"
+      >
+        <i class="bi bi-plus-lg mr-2"></i>Crear nueva orden
+      </button>
+    </div>
+
+    <div *ngIf="!loading && filteredOrders.length > 0" class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-100">
+        <thead class="bg-gray-50/50">
+          <tr>
+            <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">ID Operación</th>
+            <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Cantidad (BTC)</th>
+            <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Precio Unitario</th>
+            <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Inversión Total</th>
+            <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Estado</th>
+            <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Fecha Registro</th>
+            <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Gestión</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          <tr *ngFor="let order of filteredOrders" class="hover:bg-purple-50/20 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="font-mono text-xs text-purple-600 font-bold bg-purple-50 px-2 py-1 rounded border border-purple-100">
+                #{{ (order.id + '') | slice:0:8 }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-black text-gray-800">
+              <i class="bi bi-currency-bitcoin text-orange-400 mr-1"></i>{{ order.amount | number:'1.4-4' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              ${{ order.price | number:'1.2-2' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <span class="font-black text-gray-900">${{ order.total | number:'1.2-2' }}</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span [ngClass]="getStatusClass(order.status)" class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border">
+                {{ getStatusLabel(order.status) }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400 italic">
+              {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right">
+              <button
+                (click)="viewDetails(order)"
+                class="inline-flex items-center px-3 py-1.5 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-black transition-all mr-2"
+              >
+                <i class="bi bi-eye-fill mr-1.5"></i>VER
+              </button>
+              <button
+                *ngIf="order.status === OrderStatus.PENDING"
+                (click)="cancelOrder(order.id)"
+                class="inline-flex items-center px-3 py-1.5 bg-white border border-red-200 text-red-600 hover:bg-red-50 rounded-lg text-xs font-black transition-all"
+              >
+                <i class="bi bi-trash3 mr-1.5"></i>CANCELAR
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="selectedOrder" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100">
+      <div class="px-6 py-5 bg-gray-50 border-b flex justify-between items-center">
+        <h2 class="text-xl font-black text-gray-800 tracking-tight italic">Comprobante de Orden</h2>
+        <button (click)="selectedOrder = null" class="text-gray-400 hover:text-gray-700 transition-colors">
+          <i class="bi bi-x-circle-fill text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="p-8 space-y-5">
+        <div class="flex items-center justify-between py-2 border-b border-dashed">
+          <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">ID Transacción</span>
+          <span class="font-mono text-sm font-bold text-purple-600">{{ selectedOrder.id }}</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-4 bg-gray-50 rounded-xl">
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Activo</p>
+            <p class="font-black text-gray-800"><i class="bi bi-coin text-yellow-500 mr-1"></i>{{ selectedOrder.cryptoName | uppercase }}</p>
+          </div>
+          <div class="p-4 bg-gray-50 rounded-xl">
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Volumen</p>
+            <p class="font-black text-gray-800">{{ selectedOrder.amount | number:'1.4-4' }} BTC</p>
+          </div>
+        </div>
+
+        <div class="py-6 text-center bg-purple-50 rounded-2xl border border-purple-100">
+          <p class="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-1">Monto Total Liquidado</p>
+          <p class="text-4xl font-black text-purple-700 tracking-tighter">
+            ${{ selectedOrder.total | number:'1.2-2' }}
+          </p>
+          <p class="text-[11px] text-purple-400 mt-2 font-medium">Cotización: ${{ selectedOrder.price | number:'1.2-2' }} / unit</p>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-400 font-bold">Estado del Activo:</span>
+            <span [ngClass]="getStatusClass(selectedOrder.status)" class="font-black tracking-tighter italic uppercase text-xs">
+              {{ getStatusLabel(selectedOrder.status) }}
+            </span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-400 font-bold">Fecha de Registro:</span>
+            <span class="text-gray-700 font-black italic text-xs">{{ selectedOrder.createdAt | date:'medium' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 border-t bg-gray-50/50">
+        <button
+          (click)="selectedOrder = null"
+          class="w-full py-4 bg-gray-900 hover:bg-black text-white font-black rounded-xl transition-all shadow-xl active:scale-[0.98]"
+        >
+          CERRAR DETALLES
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
