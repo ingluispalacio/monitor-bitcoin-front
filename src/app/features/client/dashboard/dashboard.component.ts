@@ -135,7 +135,8 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
 
         // Manejo de Precio - SOLUCIÓN AL ERROR DE TIPO
         if (event.type === EventType.PRICE_UPDATE) {
-          const newPriceValue = event.data as number;
+          const priceData = event.data as any;
+          const newPriceValue = Number(priceData.price);
 
           if (this.bitcoinPrice) {
             // Opción A: Actualizamos solo el precio sobre el objeto existente para no perder los otros campos
