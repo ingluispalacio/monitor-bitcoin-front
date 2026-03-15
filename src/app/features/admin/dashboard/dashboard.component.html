@@ -98,5 +98,11 @@
       </div>
     </div>
 
+  <app-confirmation-dialog
+    *ngIf="showConfirmation"
+    [data]="confirmationData"
+    (closed)="onConfirmationResult($event)">
+  </app-confirmation-dialog>
+
   </div>
 </div>

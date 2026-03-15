@@ -82,7 +82,7 @@ export class OrderService {
 
   rejectOrder(id: string): Observable<ApiResponse<Order>> {
     return this.handleResponse(
-      this.http.put<ApiResponse<Order>>(`${this.apiUrl}/${id}/reject`, {})
+      this.http.patch<ApiResponse<Order>>(`${this.apiUrl}/${id}/reject`, {})
     );
   }
 

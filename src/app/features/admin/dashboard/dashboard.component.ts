@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../../core/services/order.service';
 import { WebSocketService } from '../../../core/services/websocket.service';
+import { ConfirmationData, ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { Order } from '../../../core/models/order.model';
 import { firstValueFrom, Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -19,7 +20,7 @@ interface LiveEvent {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ConfirmationDialogComponent],
   templateUrl: './dashboard.component.html',
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
@@ -27,6 +28,14 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   liveEvents: LiveEvent[] = [];
   loading = true;
   wsConnected = false;
+
+  showConfirmation = false;
+  confirmationData: ConfirmationData = {
+    title: '',
+    message: '',
+    type: 'warning'
+  };
+  private pendingRejectOrderId: string | null = null;
 
   private subscriptions: Subscription[] = [];
 
@@ -139,12 +148,37 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   rejectOrder(orderId: string): void {
-    if (!confirm('¿Rechazar esta orden?')) return;
+    this.pendingRejectOrderId = orderId;
+    this.confirmationData = {
+      title: 'Rechazar Orden',
+      message: '¿Rechazar esta orden?',
+      confirmText: 'Rechazar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    };
+    this.showConfirmation = true;
+  }
+
+  onConfirmationResult(result: boolean): void {
+    this.showConfirmation = false;
+
+    if (!result || !this.pendingRejectOrderId) {
+      this.pendingRejectOrderId = null;
+      return;
+    }
+
+    const orderId = this.pendingRejectOrderId;
+    this.pendingRejectOrderId = null;
+
     this.orderService.rejectOrder(orderId).subscribe({
       next: () => {
-        this.toastr.error('Orden Rechazada');
+        this.toastr.success('Orden Rechazada con exito');
         this.loadInitialData();
       },
+      error: (err) => {
+        console.error('Error rechazando orden:', err);
+        this.toastr.error('No se pudo rechazar la orden');
+      }
     });
   }
 }

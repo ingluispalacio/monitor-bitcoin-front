@@ -9,8 +9,8 @@ import { firstValueFrom } from 'rxjs';
 
 // Importar modales
 import { UserFormModalComponent } from './components/user-form-modal/user-form-modal.component';
-import { ConfirmationData, ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { UserRole } from '../../../core/enums/user-role.enum';
+import { ConfirmationData, ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 @Component({
   selector: 'app-users',
   standalone: true,
