@@ -3,11 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { Order } from '../models/order.model';
-import { OrderStats } from '../../features/admin/orders/models/order-stats.interface';
-import { OrderFilter } from '../../features/admin/orders/models/order-filter.interface';
 import { ApiResponse } from '../models/api-response.interface';
 import { ToastrService } from 'ngx-toastr';
+import { Order } from '../models/order.model';
+import { OrderStats } from '../models/order-stats.interface';
+import { OrderFilter } from '../models/order-filter.interface';
 
 @Injectable({
   providedIn: 'root'

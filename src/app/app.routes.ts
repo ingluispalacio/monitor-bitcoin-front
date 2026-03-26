@@ -4,23 +4,19 @@ import { RoleGuard } from './core/guards/role.guard';
 import { ClientLayoutComponent } from './layout/client-layout/client-layout.component';
 import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layout/auth-layout/auth-layout.component';
-import { LoginComponent } from './features/auth/login/login.component';
-import { ClientDashboardComponent } from './features/client/dashboard/dashboard.component';
-import { CreateOrderComponent } from './features/client/create-order/create-order.component';
-import { MyOrdersComponent } from './features/client/my-orders/my-orders.component';
-import { AdminDashboardComponent } from './features/admin/dashboard/dashboard.component';
-import { AdminOrdersComponent } from './features/admin/orders/orders.component';
-import { AdminUsersComponent } from './features/admin/users/users.component';
-import { AdminFeatureToggleComponent } from './features/admin/feature-toggle/feature-toggle.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: AuthLayoutComponent,
     children: [
-      { path: 'login', component: LoginComponent },
-      { path: '', redirectTo: '/login', pathMatch: 'full' }
-    ]
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./auth/feature/login/login.page').then((m) => m.LoginPage),
+      },
+      { path: '', redirectTo: '/login', pathMatch: 'full' },
+    ],
   },
   {
     path: 'client',
@@ -28,11 +24,29 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { expectedRole: 'CLIENT' },
     children: [
-      { path: 'dashboard', component: ClientDashboardComponent },
-      { path: 'create-order', component: CreateOrderComponent },
-      { path: 'my-orders', component: MyOrdersComponent },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-    ]
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./client/feature/dashboard/dashboard.page').then(
+            (m) => m.ClientDashboardPage,
+          ),
+      },
+      {
+        path: 'create-order',
+        loadComponent: () =>
+          import('./client/feature/create-order/create-order.page').then(
+            (m) => m.CreateOrderPage,
+          ),
+      },
+      {
+        path: 'my-orders',
+        loadComponent: () =>
+          import('./client/feature/my-orders/my-orders.page').then(
+            (m) => m.MyOrdersPage,
+          ),
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
   },
   {
     path: 'admin',
@@ -40,12 +54,36 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { expectedRole: 'ADMIN' },
     children: [
-      { path: 'dashboard', component: AdminDashboardComponent },
-      { path: 'orders', component: AdminOrdersComponent },
-      { path: 'users', component: AdminUsersComponent },
-      { path: 'features', component: AdminFeatureToggleComponent },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-    ]
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./admin/feature/dashboard/dashboard.page').then(
+            (m) => m.AdminDashboardPage,
+          ),
+      },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./admin/feature/orders/orders.page').then(
+            (m) => m.AdminOrdersPage,
+          ),
+      },
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./admin/feature/users/users.page').then(
+            (m) => m.AdminUsersPage,
+          ),
+      },
+      {
+        path: 'features',
+        loadComponent: () =>
+          import('./admin/feature/feature-toggle/feature-toggle.page').then(
+            (m) => m.AdminFeatureTogglePage,
+          ),
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
   },
-  { path: '**', redirectTo: '/login' }
+  { path: '**', redirectTo: '/login' },
 ];

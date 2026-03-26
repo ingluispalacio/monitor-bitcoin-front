@@ -6,8 +6,8 @@ import { User } from '../models/user.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
 import { UserRole } from '../enums/user-role.enum';
-import { LoginResponse } from '../../features/auth/models/login-response.interface';
-import { LoginRequest } from '../../features/auth/models/login-request.interface';
+import { LoginResponse } from '../../auth/data-access/models/login-response.interface';
+import { LoginRequest } from '../../auth/data-access/models/login-request.interface';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.interface';
 import { ToastrService } from 'ngx-toastr'; // 👈 ejemplo con ngx-toastr

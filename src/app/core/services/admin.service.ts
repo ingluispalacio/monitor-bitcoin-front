@@ -5,9 +5,9 @@ import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { User, CreateUserRequest } from '../models/user.model';
 import { FeatureToggle } from '../models/feature-toggle.model';
-import { AdminDashboardStats } from '../../features/admin/models/dashboard-stats.interface';
 import { ApiResponse } from '../models/api-response.interface';
 import { ToastrService } from 'ngx-toastr';
+import { AdminDashboardStats } from '../../admin/data-access/models/dashboard-stats.interface';
 
 @Injectable({
   providedIn: 'root'

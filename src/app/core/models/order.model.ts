@@ -1,5 +1,4 @@
 import { OrderStatus } from "../enums/order-status.enum";
-
 export interface Order {
   id: string;
   clientName: string;
