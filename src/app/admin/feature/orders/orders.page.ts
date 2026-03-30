@@ -25,7 +25,7 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
     rejected: 0
   };;
   loading: boolean = true;
-  statusFilter: string = 'PENDING';
+  statusFilter: string = '';
   
   private subscriptions: Subscription[] = [];
 
@@ -35,9 +35,19 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
     private toastr: ToastrService
   ) {}
 
+  columns: { key: keyof Order; label: string }[] = [
+    { key: 'clientName', label: 'Cliente' },
+    { key: 'cryptoName', label: 'Cripto' },
+    { key: 'amount', label: 'Cantidad' },
+    { key: 'price', label: 'Precio' },
+    { key: 'total', label: 'Total' },
+    { key: 'status', label: 'Estado' },
+    { key: 'createdAt', label: 'Fecha' }
+  ];
+
   ngOnInit(): void {
     this.loadOrders();
-    this.loadStats();
+    // this.loadStats();
     this.setupWebSocket();
   }
 
@@ -72,7 +82,7 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.wsService.onNewOrders().subscribe(() => {
         this.loadOrders();
-        this.loadStats();
+        // this.loadStats();
         this.toastr.info('Nueva orden recibida', 'Actualización');
       })
     );
@@ -84,7 +94,7 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
 
   refreshOrders(): void {
     this.loadOrders();
-    this.loadStats();
+    // this.loadStats();
   }
 
   approveOrder(orderId: string): void {
@@ -92,7 +102,7 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
       next: () => {
         this.toastr.success('Orden aprobada exitosamente');
         this.loadOrders();
-        this.loadStats();
+        // this.loadStats();
       }
     });
   }
@@ -102,7 +112,7 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
       next: () => {
         this.toastr.success('Orden rechazada');
         this.loadOrders();
-        this.loadStats();
+        // this.loadStats();
       }
     });
   }
